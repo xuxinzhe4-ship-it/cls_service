@@ -18,7 +18,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python deps.
-# Replace opencv-python with headless to avoid GUI dependencies.
 COPY requirements.txt /app/requirements.txt
 RUN sed -i 's/^opencv-python$/opencv-python-headless/' /app/requirements.txt \
     && python3 -m pip install --no-cache-dir -r /app/requirements.txt
@@ -28,5 +27,5 @@ COPY app.py classifier.py /app/
 
 EXPOSE 8000
 
-# Start the service (PORT can be overridden by env).
+# Start the service.
 CMD ["sh", "-c", "python3 -m gunicorn -w 2 -b 0.0.0.0:${PORT:-8000} app:app"]
